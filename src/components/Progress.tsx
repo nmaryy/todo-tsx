@@ -9,7 +9,7 @@ const Progress = ({ completedCount, activeCount, allCount }: progress) => {
 
   return (
     <section
-      className=" p-5 rounded-xl flex flex-col mt-4 
+      className=" p-5 rounded-xl flex flex-col mt-0 
             border-[1px]
                 bg-white border-slate-200  "
     >

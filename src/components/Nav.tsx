@@ -18,7 +18,10 @@ const Nav = ({
   return (
     <nav
       className=" p-5 flex flex-row justify-between mt-4
-            bg-white border-slate-200 border-[1px] rounded-xl"
+            bg-white border-slate-200
+             border-[1px] rounded-xl
+              max-sm:mt-2
+              max-sm:p-4"
     >
       <p
         className="
@@ -30,6 +33,7 @@ const Nav = ({
                 hover:text-white
                 active:bg-black active:text-white
               rounded-md py-1 px-2 text-black text-xs
+               max-sm:text-[10px]
               ${
                 displayState === 'All'
                   ? 'bg-black text-white'
@@ -45,6 +49,7 @@ const Nav = ({
                 hover:text-white   mx-2
                 active:bg-black active:text-white
               rounded-md py-1 px-2 text-black text-xs
+               max-sm:text-[10px]
               ${
                 displayState === 'Active'
                   ? 'bg-black text-white'
@@ -59,7 +64,7 @@ const Nav = ({
           className={` hover:bg-black
                 hover:text-white text-black
                 active:bg-black active:text-white
-              rounded-md py-1 px-2  text-xs
+              rounded-md py-1 px-2  text-xs  max-sm:text-[10px]
             '
               ${
                 displayState === 'Completed'
@@ -77,7 +82,9 @@ const Nav = ({
               bg-slate-200
               hover:text-white
               active:bg-black active:text-white
-            rounded-md py-1 px-2 text-red-500 text-xs"
+            rounded-md py-1 px-2 text-red-500 text-xs
+             max-sm:text-[10px]
+             "
       >
         Clear All ({allCount})
       </button>

@@ -6,13 +6,16 @@ const Header = () => {
     >
       <header
         className="font-bold m-2 
-              text-3xl  text-black"
+              text-3xl  text-black
+              max-sm:text-xl
+ "
       >
         Tasks
       </header>
       <p
         className="text-sm 
-           text-black"
+           text-black
+           max-sm:text-xs"
       >
         Stay organized and get things done
       </p>

@@ -93,7 +93,7 @@ const App = () => {
         className=" bg-white 
         border-slate-200 border-[1px]
         rounded-xl flex flex-col     
-         my-4"
+         my-4 max-sm:my-2 "
       >
         {filteredTasks.map((task) => (
           <TaskItem
@@ -117,7 +117,7 @@ const App = () => {
        bg-slate-100"
     >
       <Header />
-      <div className="max-md:w-3/5 min-md:w-3/5 min-lg:w-3/5 flex flex-col justify-evenly">
+      <div className=" max-md:w-3/5 min-md:w-3/5 min-lg:w-3/5 flex flex-col justify-evenly">
         <ItemAdder addBtnHandler={addBtnHandler} />
 
         <Nav
@@ -144,10 +144,13 @@ const App = () => {
           activeCount={activeCount ?? 0}
           allCount={allCount ?? 0}
         />
+        <footer
+          className="text-[0.6rem] my-4 self-center
+      max-sm:my-2 "
+        >
+          {activeCount} of {allCount} tasks remaining
+        </footer>
       </div>
-      <footer className="text-[0.6rem] mt-4">
-        {activeCount} of {allCount} tasks remaining
-      </footer>
     </main>
   );
 };
