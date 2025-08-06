@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  color-scheme: light dark;
+  color: #818089;
+}
+
+
+.add--btn {
+  background-color: #818089;
+  color: #ffffff;
+}
+
+
+
+button {
+  cursor: pointer;
+}
+
+
+
+.entering {
+  animation: enterer 300ms ease-in-out;
+}
+
+
+
+@keyframes enterer {
+  0% {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
