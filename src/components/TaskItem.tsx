@@ -1,19 +1,10 @@
-type prop = {
-  task: string;
-  id: string;
-  date: string;
-  state: 'Active' | 'Completed';
-  toggleCheckbox: (id: string) => void;
-  itemDeleteHandler: (id: string) => void;
-};
+import type { TaskItemProps } from '../store/types';
+
 const TaskItem = ({
   task,
-  id,
-  date,
-  state,
   toggleCheckbox,
   itemDeleteHandler,
-}: prop) => {
+}: TaskItemProps) => {
   return (
     <li
       className=" list-none p-4 
@@ -25,38 +16,38 @@ const TaskItem = ({
       <div className="flex flex-row items-center justify-between">
         <p className="flex flex-row items-center">
           <label
-            htmlFor={`check--${id}`}
+            htmlFor={`check--${task.id}`}
             className=" bg-slate-200 rounded-full w-4 aspect-square
           flex flex-row items-center 
           justify-center checked:bg-white"
           >
             <span
               className={`rounded-full w-2 aspect-square ${
-                state === 'Completed' ? 'bg-slate-200' : 'bg-white '
+                task.state === 'COMPELETED' ? 'bg-slate-200' : 'bg-white '
               }`}
             ></span>
           </label>
           <input
-            id={`check--${id}`}
-            name={`check--${id}`}
-            checked={state === 'Completed'}
+            id={`check--${task.id}`}
+            name={`check--${task.id}`}
+            checked={task.state === 'COMPELETED'}
             className="mr-2 appearance-none"
             type="checkbox"
-            onChange={() => toggleCheckbox(id)}
+            onChange={() => toggleCheckbox(task.id)}
           />
           <span
             className={`text-black capitalize
             ${
-              state === 'Completed'
+              task.state === 'COMPELETED'
                 ? 'line-through decoration-1 text-slate-400'
                 : ''
             }`}
           >
-            {task}
+            {task.task}
           </span>
         </p>
         <button
-          onClick={() => itemDeleteHandler(id)}
+          onClick={() => itemDeleteHandler(task.id)}
           className="mr-4 text-red-400
         hover:scale-120
         transition-transform duration-150"
@@ -64,7 +55,7 @@ const TaskItem = ({
           x
         </button>
       </div>
-      <p className="ml-5 mt-2 text-[0.65rem]">{date}</p>
+      <p className="ml-5 mt-2 text-[0.65rem]">{task.date}</p>
     </li>
   );
 };

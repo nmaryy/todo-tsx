@@ -1,11 +1,14 @@
-type progress = {
-  completedCount: number;
-  activeCount: number;
-  allCount: number;
-};
-const Progress = ({ completedCount, activeCount, allCount }: progress) => {
+import type { Task } from '../store/types';
+import { lengthMeasure, variables } from '../store/store';
+
+const Progress = ({ tasksArr }: { tasksArr: Task[] }) => {
   const percent =
-    allCount > 0 ? Math.round((completedCount / allCount) * 100) : 0;
+    tasksArr.length > 0
+      ? Math.round(
+          (lengthMeasure(tasksArr, variables.compeleted) / tasksArr.length) *
+            100
+        )
+      : 0;
 
   return (
     <section
@@ -20,21 +23,21 @@ const Progress = ({ completedCount, activeCount, allCount }: progress) => {
               py-2"
         >
           <span>Total Tasks</span>
-          <span>{allCount}</span>
+          <span>{tasksArr.length}</span>
         </li>
         <li
           className="flex flex-row justify-between px-4
               py-2"
         >
           <span>Completed</span>
-          <span>{completedCount}</span>
+          <span>{lengthMeasure(tasksArr, variables.compeleted)}</span>
         </li>
         <li
           className="flex flex-row justify-between px-4
               py-2"
         >
           <span>Active</span>
-          <span>{activeCount}</span>
+          <span>{lengthMeasure(tasksArr, variables.active)}</span>
         </li>
         <li
           className="flex flex-row justify-between px-4

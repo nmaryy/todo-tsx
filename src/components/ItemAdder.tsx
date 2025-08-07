@@ -1,15 +1,13 @@
 import { useRef } from 'react';
+import type { ItemAdderProps } from '../store/types';
 
-type Add = {
-  addBtnHandler: (input: HTMLInputElement) => void;
-};
-
-const ItemAdder = ({ addBtnHandler }: Add) => {
+const ItemAdder = ({ addBtnHandler }: ItemAdderProps) => {
   const input = useRef<HTMLInputElement>(null);
 
   function handleClick() {
     if (input.current) {
-      addBtnHandler(input.current);
+      addBtnHandler(input.current.value.trim());
+      input.current.value = '';
     }
   }
 
@@ -44,7 +42,6 @@ const ItemAdder = ({ addBtnHandler }: Add) => {
         />
         <button
           onClick={handleClick}
-          onKeyDown={handleClick}
           className="p-2
             text-sm font-bold
             rounded-xl w-1/5 ml-2 add--btn

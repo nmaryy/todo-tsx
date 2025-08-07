@@ -1,69 +1,43 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import TaskItem from './components/TaskItem';
 import Header from './components/Header';
 import ItemAdder from './components/ItemAdder';
 import Progress from './components/Progress';
 import Nav from './components/Nav';
 import Displays from './components/Displays';
-
-export type Task = {
-  task: string;
-  id: string;
-  date: string;
-  state: 'Active' | 'Completed';
-};
+import { variables, lengthMeasure } from './store/store';
+import useItem from './hooks/useItem';
+import type { Task } from './store/types';
 
 const App = () => {
-  const [displayState, setDisplayState] = useState<
-    'All' | 'Active' | 'Completed'
-  >('All');
-
+  const [displayState, setDisplayState] = useState(variables.all);
   const [tasksArr, setTasksArr] = useState<Task[]>(() => {
     const initialTasks = localStorage.getItem('tasks');
     return initialTasks ? JSON.parse(initialTasks) : [];
   });
 
-  const completedCount = tasksArr.filter(
-    (task) => task.state === 'Completed'
-  ).length;
-  const activeCount = tasksArr.filter((task) => task.state === 'Active').length;
-  const allCount = tasksArr.length;
+  const { addItem, toggler } = useItem();
+
+  const displayedTasks = useMemo(
+    () =>
+      displayState === variables.all
+        ? tasksArr
+        : tasksArr.filter((task) => task.state === displayState),
+    [tasksArr, displayState]
+  );
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasksArr));
   }, [tasksArr]);
 
-  function addBtnHandler(input: HTMLInputElement): void {
+  function addBtnHandler(input: string): void {
     if (input) {
-      const newTask = input.value.trim();
-      if (newTask) {
-        setTasksArr((prevTasks) => {
-          return [
-            {
-              task: newTask,
-              id: crypto.randomUUID(),
-              date: new Date().toLocaleString(),
-              state: 'Active',
-            },
-            ...prevTasks,
-          ];
-        });
-      }
-      input.value = '';
+      setTasksArr((prevTasks) => addItem({ prevTasks, input }));
     }
   }
 
-  function toggleCheckbox(id: string) {
-    setTasksArr((currTasks) =>
-      currTasks.map((foundTask) =>
-        foundTask.id === id
-          ? {
-              ...foundTask,
-              state: foundTask.state === 'Completed' ? 'Active' : 'Completed',
-            }
-          : foundTask
-      )
-    );
+  function toggleCheckbox(id: string): void {
+    setTasksArr((currTasks) => toggler({ currTasks, id }));
   }
 
   function itemDeleteHandler(id: string) {
@@ -74,40 +48,6 @@ const App = () => {
   function clearAll() {
     setTasksArr([]);
     localStorage.removeItem('tasks');
-  }
-
-  function handleRender() {
-    let filteredTasks;
-    if (displayState === 'All' && allCount > 0) {
-      filteredTasks = tasksArr;
-    } else if (displayState === 'Active' && activeCount > 0) {
-      filteredTasks = tasksArr.filter((task) => task.state === 'Active');
-    } else if (displayState === 'Completed' && completedCount > 0) {
-      filteredTasks = tasksArr.filter((task) => task.state === 'Completed');
-    } else {
-      return [];
-    }
-
-    return (
-      <ul
-        className=" bg-white 
-        border-slate-200 border-[1px]
-        rounded-xl flex flex-col     
-         my-4 max-sm:my-2 "
-      >
-        {filteredTasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task.task}
-            id={task.id}
-            date={task.date}
-            state={task.state}
-            toggleCheckbox={toggleCheckbox}
-            itemDeleteHandler={itemDeleteHandler}
-          />
-        ))}
-      </ul>
-    );
   }
 
   return (
@@ -121,34 +61,38 @@ const App = () => {
         <ItemAdder addBtnHandler={addBtnHandler} />
 
         <Nav
-          completedCount={completedCount ?? 0}
-          activeCount={activeCount ?? 0}
-          allCount={allCount ?? 0}
+          tasksArr={tasksArr}
           setDisplayState={setDisplayState}
           displayState={displayState}
           clearAll={clearAll}
         />
 
-        {
-          <Displays
-            completedCount={completedCount}
-            activeCount={activeCount}
-            allCount={allCount}
-            displayState={displayState}
-          />
-        }
+        {<Displays tasksArr={tasksArr} displayState={displayState} />}
 
-        {allCount > 0 && handleRender()}
-        <Progress
-          completedCount={completedCount ?? 0}
-          activeCount={activeCount ?? 0}
-          allCount={allCount ?? 0}
-        />
+        {displayedTasks.length > 0 && (
+          <ul
+            className=" bg-white 
+        border-slate-200 border-[1px]
+        rounded-xl flex flex-col     
+         my-4 max-sm:my-2 "
+          >
+            {displayedTasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                toggleCheckbox={toggleCheckbox}
+                itemDeleteHandler={itemDeleteHandler}
+              />
+            ))}
+          </ul>
+        )}
+        <Progress tasksArr={tasksArr} />
         <footer
           className="text-[0.6rem] my-4 self-center
       max-sm:my-2 "
         >
-          {activeCount} of {allCount} tasks remaining
+          {lengthMeasure(tasksArr, variables.active)} of {tasksArr.length} tasks
+          remaining
         </footer>
       </div>
     </main>

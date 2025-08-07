@@ -1,26 +1,24 @@
-type props = {
-  displayState: string;
-  completedCount: number;
-  activeCount: number;
-  allCount: number;
-};
-const Displays = ({
-  displayState,
-  allCount,
-  completedCount,
-  activeCount,
-}: props) => {
+import { lengthMeasure, variables } from '../store/store';
+import type { DisplayProps } from '../store/types';
+
+const Displays = ({ displayState, tasksArr }: DisplayProps) => {
   function displayRender() {
     let header;
     let desc;
 
-    if (!allCount && displayState === 'All') {
+    if (!tasksArr.length && displayState === variables.all) {
       header = '+';
       desc = ' No tasks yet. Add your first todo above!';
-    } else if (!activeCount && displayState === 'Active') {
+    } else if (
+      !lengthMeasure(tasksArr, variables.active) &&
+      displayState === variables.active
+    ) {
       header = '+';
       desc = 'No active tasks. Add one above!';
-    } else if (!completedCount && displayState === 'Completed') {
+    } else if (
+      !lengthMeasure(tasksArr, variables.compeleted) &&
+      displayState === variables.compeleted
+    ) {
       header = '...';
       desc = 'No completed tasks yet...';
     } else {
