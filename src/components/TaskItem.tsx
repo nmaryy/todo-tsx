@@ -1,10 +1,9 @@
+import { useContext } from 'react';
 import type { TaskItemProps } from '../store/types';
+import { MyContext } from '../context/myContext';
 
-const TaskItem = ({
-  task,
-  toggleCheckbox,
-  itemDeleteHandler,
-}: TaskItemProps) => {
+const TaskItem = ({ task }: TaskItemProps) => {
+  const { toggleCheckbox, itemDeleteHandler } = useContext(MyContext);
   return (
     <li
       className=" list-none p-4 
@@ -14,33 +13,34 @@ const TaskItem = ({
     "
     >
       <div className="flex flex-row items-center justify-between">
-        <p className="flex flex-row items-center">
-          <label
-            htmlFor={`check--${task.id}`}
-            className=" bg-slate-200 rounded-full w-4 aspect-square
+        <p className="flex flex-row items-start">
+          <span className="mr-2 ">
+            <label
+              htmlFor={`check--${task.id}`}
+              className=" bg-slate-200 rounded-full w-4 aspect-square
           flex flex-row items-center 
           justify-center checked:bg-white"
-          >
-            <span
-              className={`rounded-full w-2 aspect-square ${
-                task.state === 'COMPELETED' ? 'bg-slate-200' : 'bg-white '
-              }`}
-            ></span>
-          </label>
-          <input
-            id={`check--${task.id}`}
-            name={`check--${task.id}`}
-            checked={task.state === 'COMPELETED'}
-            className="mr-2 appearance-none"
-            type="checkbox"
-            onChange={() => toggleCheckbox(task.id)}
-          />
+            >
+              <span
+                className={`rounded-full w-2 aspect-square ${
+                  task.completed ? 'bg-slate-200' : 'bg-white '
+                }`}
+              ></span>
+            </label>
+            <input
+              id={`check--${task.id}`}
+              name={`check--${task.id}`}
+              checked={task.completed}
+              className="appearance-none"
+              type="checkbox"
+              onChange={() => toggleCheckbox(task.id)}
+            />
+          </span>
+
           <span
-            className={`text-black capitalize
+            className={`text-black capitalize wrap-anywhere
             ${
-              task.state === 'COMPELETED'
-                ? 'line-through decoration-1 text-slate-400'
-                : ''
+              task.completed ? 'line-through decoration-1 text-slate-400' : ''
             }`}
           >
             {task.task}
@@ -48,7 +48,7 @@ const TaskItem = ({
         </p>
         <button
           onClick={() => itemDeleteHandler(task.id)}
-          className="mr-4 text-red-400
+          className="mr-4 text-red-400 text-[14px] 
         hover:scale-120
         transition-transform duration-150"
         >

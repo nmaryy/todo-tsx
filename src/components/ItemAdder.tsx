@@ -1,9 +1,10 @@
-import { useRef } from 'react';
-import type { ItemAdderProps } from '../store/types';
+import { useContext, useRef } from 'react';
+import { MyContext } from '../context/myContext';
 
-const ItemAdder = ({ addBtnHandler }: ItemAdderProps) => {
+const ItemAdder = () => {
   const input = useRef<HTMLInputElement>(null);
 
+  const { addBtnHandler } = useContext(MyContext);
   function handleClick() {
     if (input.current) {
       addBtnHandler(input.current.value.trim());
@@ -33,10 +34,11 @@ const ItemAdder = ({ addBtnHandler }: ItemAdderProps) => {
           className="bg-slate-100 p-3
             text-sm font-light
             rounded-xl w-4/5 outline-none
-               border-1 border-slate-200
+               border-1 
                max-sm:text-[10px]
                max-sm:h-8
-               max-sm:p-1"
+               max-sm:p-1
+               border-slate-200"
           type="text"
           placeholder="What needs to be done?"
         />

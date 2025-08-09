@@ -1,12 +1,11 @@
-import { lengthMeasure, variables } from '../store/store';
+import { useContext } from 'react';
+import { MyContext } from '../context/myContext';
+import { tasksFilter, variables } from '../store/util';
 import type { NavBtnProps } from '../store/types';
 
-const NavBtn = ({
-  setDisplayState,
-  displayState,
-  state,
-  tasksArr,
-}: NavBtnProps) => {
+const NavBtn = ({ setDisplayState, displayState, state }: NavBtnProps) => {
+  const { tasksArr } = useContext(MyContext);
+
   return (
     <button
       onClick={() => setDisplayState(state)}
@@ -27,7 +26,7 @@ const NavBtn = ({
         (
         {state === variables.all
           ? tasksArr.length
-          : lengthMeasure(tasksArr, state)}
+          : tasksFilter(tasksArr, state).length}
         )
       </span>
     </button>

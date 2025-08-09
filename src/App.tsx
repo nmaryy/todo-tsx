@@ -1,54 +1,21 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import TaskItem from './components/TaskItem';
 import Header from './components/Header';
 import ItemAdder from './components/ItemAdder';
 import Progress from './components/Progress';
 import Nav from './components/Nav';
 import Displays from './components/Displays';
-import { variables, lengthMeasure } from './store/store';
-import useItem from './hooks/useItem';
-import type { Task } from './store/types';
+import { variables, tasksFilter } from './store/util';
+import { MyContext } from './context/myContext';
 
 const App = () => {
   const [displayState, setDisplayState] = useState(variables.all);
-  const [tasksArr, setTasksArr] = useState<Task[]>(() => {
-    const initialTasks = localStorage.getItem('tasks');
-    return initialTasks ? JSON.parse(initialTasks) : [];
-  });
 
-  const { addItem, toggler } = useItem();
+  const { tasksArr } = useContext(MyContext);
 
-  const displayedTasks = useMemo(
-    () =>
-      displayState === variables.all
-        ? tasksArr
-        : tasksArr.filter((task) => task.state === displayState),
-    [tasksArr, displayState]
-  );
-
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasksArr));
-  }, [tasksArr]);
-
-  function addBtnHandler(input: string): void {
-    if (input) {
-      setTasksArr((prevTasks) => addItem({ prevTasks, input }));
-    }
-  }
-
-  function toggleCheckbox(id: string): void {
-    setTasksArr((currTasks) => toggler({ currTasks, id }));
-  }
-
-  function itemDeleteHandler(id: string) {
-    setTasksArr((currTasks) =>
-      currTasks.filter((delTask) => delTask.id !== id)
-    );
-  }
-  function clearAll() {
-    setTasksArr([]);
-    localStorage.removeItem('tasks');
-  }
+  const displayedTasks = useMemo(() => {
+    return tasksFilter(tasksArr, displayState);
+  }, [tasksArr, displayState]);
 
   return (
     <main
@@ -58,16 +25,11 @@ const App = () => {
     >
       <Header />
       <div className=" max-md:w-3/5 min-md:w-3/5 min-lg:w-3/5 flex flex-col justify-evenly">
-        <ItemAdder addBtnHandler={addBtnHandler} />
+        <ItemAdder />
 
-        <Nav
-          tasksArr={tasksArr}
-          setDisplayState={setDisplayState}
-          displayState={displayState}
-          clearAll={clearAll}
-        />
+        <Nav setDisplayState={setDisplayState} displayState={displayState} />
 
-        {<Displays tasksArr={tasksArr} displayState={displayState} />}
+        {<Displays displayState={displayState} />}
 
         {displayedTasks.length > 0 && (
           <ul
@@ -77,22 +39,17 @@ const App = () => {
          my-4 max-sm:my-2 "
           >
             {displayedTasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                task={task}
-                toggleCheckbox={toggleCheckbox}
-                itemDeleteHandler={itemDeleteHandler}
-              />
+              <TaskItem key={task.id} task={task} />
             ))}
           </ul>
         )}
-        <Progress tasksArr={tasksArr} />
+        <Progress />
         <footer
           className="text-[0.6rem] my-4 self-center
       max-sm:my-2 "
         >
-          {lengthMeasure(tasksArr, variables.active)} of {tasksArr.length} tasks
-          remaining
+          {tasksFilter(tasksArr, variables.active).length} of {tasksArr.length}{' '}
+          tasks remaining
         </footer>
       </div>
     </main>

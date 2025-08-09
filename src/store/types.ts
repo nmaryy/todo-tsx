@@ -1,32 +1,35 @@
+import type { ReactNode } from 'react';
+
 export type Task = {
   task: string;
   id: string;
   date: string;
-  state: string;
+  completed: boolean;
 };
 
 export type DisplayProps = {
   displayState: string;
-  tasksArr: Task[];
-};
-
-export type ItemAdderProps = {
-  addBtnHandler: (input: string) => void;
 };
 
 export type NavProps = {
-  setDisplayState: (state: string) => void;
+  setDisplayState: React.Dispatch<React.SetStateAction<string>>;
   displayState: string;
-  tasksArr: Task[];
-  clearAll: () => void;
 };
 
-export type NavBtnProps = Omit<NavProps, 'clearAll'> & {
+export type NavBtnProps = NavProps & {
   state: string;
 };
 
 export type TaskItemProps = {
   task: Task;
+};
+
+export type ContextProviderProp = { children: ReactNode };
+export type MyContextProp = {
+  tasksArr: Task[];
+  setTasksArr: React.Dispatch<React.SetStateAction<Task[]>>;
+  addBtnHandler: (input: string) => void;
   toggleCheckbox: (id: string) => void;
   itemDeleteHandler: (id: string) => void;
+  clearAll: () => void;
 };

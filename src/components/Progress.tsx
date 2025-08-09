@@ -1,11 +1,15 @@
-import type { Task } from '../store/types';
-import { lengthMeasure, variables } from '../store/store';
+import { tasksFilter, variables } from '../store/util';
+import { useContext } from 'react';
+import { MyContext } from '../context/myContext';
 
-const Progress = ({ tasksArr }: { tasksArr: Task[] }) => {
+const Progress = () => {
+  const { tasksArr } = useContext(MyContext);
+
   const percent =
     tasksArr.length > 0
       ? Math.round(
-          (lengthMeasure(tasksArr, variables.compeleted) / tasksArr.length) *
+          (tasksFilter(tasksArr, variables.completed).length /
+            tasksArr.length) *
             100
         )
       : 0;
@@ -30,14 +34,14 @@ const Progress = ({ tasksArr }: { tasksArr: Task[] }) => {
               py-2"
         >
           <span>Completed</span>
-          <span>{lengthMeasure(tasksArr, variables.compeleted)}</span>
+          <span>{tasksFilter(tasksArr, variables.completed).length}</span>
         </li>
         <li
           className="flex flex-row justify-between px-4
               py-2"
         >
           <span>Active</span>
-          <span>{lengthMeasure(tasksArr, variables.active)}</span>
+          <span>{tasksFilter(tasksArr, variables.active).length}</span>
         </li>
         <li
           className="flex flex-row justify-between px-4
